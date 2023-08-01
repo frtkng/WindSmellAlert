@@ -38,7 +38,7 @@ def fetch_data():
     URL = f'http://weathernews.jp/onebox/{latitude}/{longitude}/temp=c&lang=en'
     page = requests.get(URL)
     soup = BeautifulSoup(page.content, 'html.parser')
-    return soup
+    return soup, URL
 
 def get_wind_info(weather_row):
     wind_info_element = weather_row.find('p', {'class': 'wTable__item w'})
