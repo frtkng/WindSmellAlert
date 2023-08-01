@@ -49,15 +49,15 @@ def get_wind_info(weather_row):
     wind_speed = wind_info_element.text.strip('m')
     return wind_direction, wind_speed
 
-def send_email(next_m, next_d, next_h, wind_direction, wind_speed):
+def send_email(next_m, next_d, next_h, wind_direction, wind_speed, URL):
     
     if wind_direction in ["東北東"]:
         sub_text = f'風の臭い 警報'
-        msg_text = f'風の臭いが来るかもしれません。すぐに家の窓を閉めてください！\n {next_m}月{next_d}日{next_h}時 風向き: {wind_direction}, 風速: {wind_speed}m/s \n ※この通知はウェザーニューズの情報を利用しています \n https://weathernews.jp/onebox/{latitude}/{longitude}/temp=c&lang=en'
+        msg_text = f'風の臭いが来るかもしれません。すぐに家の窓を閉めてください！\n {next_m}月{next_d}日{next_h}時 風向き: {wind_direction}, 風速: {wind_speed}m/s \n ※この通知はウェザーニューズの情報を利用しています \n {URL}'
     
     if wind_direction in ["北東","東","方向なし"]:
         sub_text = f'風の臭い 注意報'
-        msg_text = f'風の臭いが来るかもしれません。\n {next_m}月{next_d}日{next_h}時 風向き: {wind_direction}, 風速: {wind_speed}m/s \n ※この通知はウェザーニューズの情報を利用しています \n https://weathernews.jp/onebox/{latitude}/{longitude}/temp=c&lang=en' 
+        msg_text = f'風の臭いが来るかもしれません。\n {next_m}月{next_d}日{next_h}時 風向き: {wind_direction}, 風速: {wind_speed}m/s \n ※この通知はウェザーニューズの情報を利用しています \n {URL}' 
     
     #create server
     server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -69,7 +69,7 @@ def send_email(next_m, next_d, next_h, wind_direction, wind_speed):
     server.login(MY_ADDRESS, PASSWORD)
 
     # send the message via the server.
-    for recipient in TO_ADDRESS:
+    for recipient in TO_ADDRESSES:
         
         msg = MIMEMultipart()       # create a message
         
@@ -100,12 +100,12 @@ def get_next_hour_weather(soup):
     return None,None,None,None,None
 
 def main():
-    soup = fetch_data()
+    soup, URL = fetch_data()
     next_m, next_d, next_h, wind_direction, wind_speed = get_next_hour_weather(soup)
     if next_h is not None:
         print(f'{next_m}月{next_d}日{next_h}時 風向き: {wind_direction}, 風速: {wind_speed}m/s')
         if wind_direction in ["北東","東","東北東","方向なし"]:
-            send_email(next_m, next_d, next_h, wind_direction, wind_speed)
+            send_email(next_m, next_d, next_h, wind_direction, wind_speed, URL)
             print(f'メール送信しました')
 
 if __name__ == '__main__':
