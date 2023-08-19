@@ -28,7 +28,7 @@ wind_mapping = {
     "wind_1_16.png": "北",
 }
 
-MY_ADDRESS = os.environ.get('EMAIL_ADDRESS')
+MY_ADDRESS = os.environ.get('MY_ADDRESS')
 PASSWORD = os.environ.get('EMAIL_PASSWORD')
 TO_ADDRESSES = os.getenv('TO_ADDRESSES').split(',')
 
